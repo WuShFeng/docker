@@ -5,7 +5,6 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV XDG_RUNTIME_DIR=/tmp/xdg-runtime-dir
 ENV DISPLAY=:0
 # ENV WAYLAND_DISPLAY=wayland-0
-ENV LD_LIBRARY_PATH=/usr/local/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
 
 RUN sed -i 's@//.*archive.ubuntu.com@//mirrors.ustc.edu.cn@g' /etc/apt/sources.list && \
     sed -i 's/security.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list && \
