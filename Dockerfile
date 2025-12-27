@@ -4,6 +4,7 @@ WORKDIR /workspace
 ENV XDG_RUNTIME_DIR=/tmp/xdg-runtime-dir
 ENV DISPLAY=:0
 # ENV WAYLAND_DISPLAY=wayland-0
+ENV PATH="/usr/lib/ccache/bin:${PATH}"
 
 RUN if id -u 1000 >/dev/null 2>&1; then \
         old_user=$(id -un 1000); \
@@ -25,40 +26,34 @@ RUN echo -e "[archlinuxcn]\nServer = https://repo.archlinuxcn.org/\$arch" >> /et
     pacman -S --noconfirm yay sudo && \
     rm -rf /var/cache/pacman/pkg/*
 
-RUN yay -Sy --noconfirm vim nano git autoconf which bear ssh \
-    sdl2_image sdl2_ttf sdl2-compat && \
+RUN yay -Syu --noconfirm vim nano git autoconf which bear ssh \
+    sdl2_image sdl2_ttf sdl2-compat \
+    # gcc
+    ccache base-devel \
+    # pyenv
+    pyenv tk python-pipx \
+    # nvm
+    nvm \
+    # verilator
+    verilator \
+    # xserver
+    x11vnc xorg-server xf86-video-dummy openbox && \
     rm -rf /var/cache/pacman/pkg/* /var/cache/yay/*
-
-RUN yay -S --noconfirm ccache base-devel && \
-    cp /usr/bin/ccache /usr/local/bin/ && \
-    ln -s ccache /usr/local/bin/gcc && \
-    ln -s ccache /usr/local/bin/g++ && \
-    rm -rf /var/cache/pacman/pkg/* /var/cache/yay/*
-
-RUN yay -S --noconfirm pyenv tk python-pipx && \
-    echo 'PYENV_ROOT=$HOME/.pyenv' >> /etc/bash.bashrc && \
-    echo 'PATH=$PYENV_ROOT/bin:$HOME/.local/bin:$PATH' >> /etc/bash.bashrc && \
-    echo 'eval "$(pyenv init - bash)"' >> /etc/bash.bashrc && \
-    rm -rf /var/cache/pacman/pkg/* /var/cache/yay/*
-
-RUN yay -S --noconfirm verilator && \
-    rm -rf /var/cache/pacman/pkg/* /var/cache/yay/*
-
 COPY Xheadless.conf /etc/X11/xorg.conf.d/Xheadless.conf
 COPY Xwrapper.config /etc/X11/Xwrapper.config
 COPY display.sh /usr/local/bin/display
-RUN yay -S --noconfirm x11vnc xorg-server xf86-video-dummy openbox && \
-    git clone https://github.com/novnc/noVNC.git /usr/share/novnc --depth 1 --branch v1.6.0 && \
-    ln -s vnc_lite.html /usr/share/novnc/index.html && \
-    chmod a+x /usr/local/bin/display && \
-    rm -rf /var/cache/pacman/pkg/* /var/cache/yay/*
-
-RUN yay -S --noconfirm nvm && \
+RUN echo 'PYENV_ROOT=$HOME/.pyenv' >> /etc/bash.bashrc && \
+    echo 'PATH=$PYENV_ROOT/bin:$HOME/.local/bin:$PATH' >> /etc/bash.bashrc && \
+    echo 'eval "$(pyenv init - bash)"' >> /etc/bash.bashrc && \
+    # nvm
     echo 'export NVM_DIR="$HOME/.nvm"' >> /etc/bash.bashrc && \
     echo '[ -s /usr/share/nvm/init-nvm.sh ] && source /usr/share/nvm/init-nvm.sh' >> /etc/bash.bashrc && \
-    rm -rf /var/cache/pacman/pkg/* /var/lib/pacman/* /var/cache/yay/*
+    # xserver
+    git clone https://github.com/novnc/noVNC.git /usr/share/novnc --depth 1 --branch v1.6.0 && \
+    ln -s vnc_lite.html /usr/share/novnc/index.html && \
+    chmod a+x /usr/local/bin/display 
 
-RUN git clone https://github.com/riscv/riscv-gnu-toolchain && \
+RUN git clone https://github.com/riscv/riscv-gnu-toolchain --depth 1 && \
     cd riscv-gnu-toolchain && \
     ./configure --prefix=/opt/riscv --enable-multilib --with-languages=c,c++ && \
     make linux -j `nproc` && \
