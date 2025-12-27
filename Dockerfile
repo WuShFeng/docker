@@ -48,7 +48,7 @@ RUN yay -S --noconfirm verilator
 COPY Xheadless.conf /etc/X11/xorg.conf.d/Xheadless.conf
 COPY Xwrapper.config /etc/X11/Xwrapper.config
 COPY display.sh /usr/local/bin/display
-RUN yay -S --noconfirm x11vnc xorg-server xf86-video-dummy && \
+RUN yay -S --noconfirm x11vnc xorg-server xf86-video-dummy openbox && \
     git clone https://github.com/novnc/noVNC.git /usr/share/novnc --depth 1 --branch v1.6.0 && \
     ln -s vnc_lite.html /usr/share/novnc/index.html && \
     chmod a+x /usr/local/bin/display
