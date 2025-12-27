@@ -1,9 +1,6 @@
 FROM docker.io/library/archlinux:latest
 WORKDIR /workspace
 
-ENV PYENV_ROOT=/usr/local/share/pyenv
-ENV NVM_DIR=/usr/local/share/nvm
-ENV PATH=$PYENV_ROOT/bin:$PATH
 ENV XDG_RUNTIME_DIR=/tmp/xdg-runtime-dir
 ENV DISPLAY=:0
 # ENV WAYLAND_DISPLAY=wayland-0
@@ -15,7 +12,7 @@ RUN echo -e "\n[archlinuxcn]\nServer = https://repo.archlinuxcn.org/\$arch" >> /
     pacman -S --noconfirm archlinuxcn-mirrorlist-git && \
     pacman -S --noconfirm yay
 
-RUN yay -S --noconfirm vim nano git autoconf which \
+RUN yay -S --noconfirm vim nano git autoconf which python\
     sdl2_image sdl2_ttf sdl2-compat
 
 RUN yay -S --noconfirm ccache base-devel && \
@@ -24,16 +21,16 @@ RUN yay -S --noconfirm ccache base-devel && \
     ln -s ccache /usr/local/bin/g++
 
 RUN yay -S --noconfirm pyenv tk && \
-    pyenv install 3.13.11 && \
-    eval "$(pyenv init - bash)" && \
-    echo 'eval "$(pyenv init - bash)"' >> /etc/profile && \
-    pyenv global 3.13.11
+    echo "PYENV_ROOT=$HOME/.pyenv" >> /etc/bash.bashrc && \
+    echo "PATH=$PYENV_ROOT/bin:$PATH" >> /etc/bash.bashrc && \
+    echo 'eval "$(pyenv init - bash)"' >> /etc/bash.bashrc
 
 RUN git clone https://github.com/verilator/verilator --depth 1 --branch v5.042 && \
     cd verilator && \
     autoconf && \
     ./configure && \
-    make install -j `nproc` && \
+    make -j `nproc` && \
+    make install && \
     cd .. && \
     rm -rf verilator
 
@@ -47,8 +44,8 @@ RUN yay -S --noconfirm x11vnc xorg-server xf86-video-dummy && \
     chmod a+x /usr/local/bin/display
 
 RUN yay -S --noconfirm nvm && \
-    source /usr/share/nvm/init-nvm.sh && \
-    echo "source /usr/share/nvm/init-nvm.sh" >> /etc/profile
+    echo "export NVM_DIR=$HOME/.nvm" >> /etc/bash.bashrc && \
+    echo "source $NVM_DIR/init-nvm.sh" >> /etc/bash.bashrc
 
 RUN if id -u 1000 >/dev/null 2>&1; then \
         old_user=$(id -un 1000); \
