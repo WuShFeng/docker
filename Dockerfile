@@ -29,8 +29,13 @@ RUN yay -S --noconfirm pyenv tk && \
     echo 'eval "$(pyenv init - bash)"' >> /etc/profile && \
     pyenv global 3.13.11
 
-COPY verilator.sh ./
-RUN chmod +x verilator.sh && ./verilator.sh
+RUN git clone https://github.com/verilator/verilator --depth 1 --branch v5.042 && \
+    cd verilator && \
+    autoconf && \
+    ./configure && \
+    make install -j `nproc` && \
+    cd .. && \
+    rm -rf verilator
 
 COPY Xheadless.conf /etc/X11/xorg.conf.d/Xheadless.conf
 COPY Xwrapper.config /etc/X11/Xwrapper.config
@@ -38,7 +43,8 @@ COPY display.sh /usr/local/bin/display
 RUN yay -S --noconfirm x11vnc xorg-server xf86-video-dummy && \
     git clone https://github.com/novnc/noVNC.git /usr/share/novnc --depth 1 --branch v1.6.0 && \
     eval "$(pyenv init - bash)" && \
-    pip install websockify
+    pip install websockify && \
+    chmod a+x /usr/local/bin/display
 
 RUN yay -S --noconfirm nvm && \
     source /usr/share/nvm/init-nvm.sh && \
