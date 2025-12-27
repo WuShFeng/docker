@@ -22,29 +22,27 @@ RUN echo -e "[archlinuxcn]\nServer = https://repo.archlinuxcn.org/\$arch" >> /et
     pacman-key --init && \
     pacman-key --populate archlinux archlinuxcn && \
     pacman -S --noconfirm archlinuxcn-mirrorlist-git && \
-    pacman -S --noconfirm yay
+    pacman -S --noconfirm yay sudo && \
+    rm -rf /var/cache/pacman/pkg/*
 
-RUN yay -S --noconfirm vim nano git autoconf which bear \
-    sdl2_image sdl2_ttf sdl2-compat riscv64-unknown-elf-gcc
+RUN yay -Sy --noconfirm vim nano git autoconf which bear ssh \
+    sdl2_image sdl2_ttf sdl2-compat && \
+    rm -rf /var/cache/pacman/pkg/* /var/cache/yay/*
 
 RUN yay -S --noconfirm ccache base-devel && \
     cp /usr/bin/ccache /usr/local/bin/ && \
     ln -s ccache /usr/local/bin/gcc && \
-    ln -s ccache /usr/local/bin/g++
+    ln -s ccache /usr/local/bin/g++ && \
+    rm -rf /var/cache/pacman/pkg/* /var/cache/yay/*
 
 RUN yay -S --noconfirm pyenv tk python-pipx && \
     echo 'PYENV_ROOT=$HOME/.pyenv' >> /etc/bash.bashrc && \
     echo 'PATH=$PYENV_ROOT/bin:$HOME/.local/bin:$PATH' >> /etc/bash.bashrc && \
-    echo 'eval "$(pyenv init - bash)"' >> /etc/bash.bashrc
-RUN yay -S --noconfirm verilator
-# RUN git clone https://github.com/verilator/verilator --depth 1 --branch v5.042 && \
-#     cd verilator && \
-#     autoconf && \
-#     ./configure && \
-#     make -j `nproc` && \
-#     make install && \
-#     cd .. && \
-#     rm -rf verilator
+    echo 'eval "$(pyenv init - bash)"' >> /etc/bash.bashrc && \
+    rm -rf /var/cache/pacman/pkg/* /var/cache/yay/*
+
+RUN yay -S --noconfirm verilator && \
+    rm -rf /var/cache/pacman/pkg/* /var/cache/yay/*
 
 COPY Xheadless.conf /etc/X11/xorg.conf.d/Xheadless.conf
 COPY Xwrapper.config /etc/X11/Xwrapper.config
@@ -52,11 +50,19 @@ COPY display.sh /usr/local/bin/display
 RUN yay -S --noconfirm x11vnc xorg-server xf86-video-dummy openbox && \
     git clone https://github.com/novnc/noVNC.git /usr/share/novnc --depth 1 --branch v1.6.0 && \
     ln -s vnc_lite.html /usr/share/novnc/index.html && \
-    chmod a+x /usr/local/bin/display
+    chmod a+x /usr/local/bin/display && \
+    rm -rf /var/cache/pacman/pkg/* /var/cache/yay/*
 
 RUN yay -S --noconfirm nvm && \
     echo 'export NVM_DIR="$HOME/.nvm"' >> /etc/bash.bashrc && \
-    echo '[ -s /usr/share/nvm/init-nvm.sh ] && source /usr/share/nvm/init-nvm.sh' >> /etc/bash.bashrc
+    echo '[ -s /usr/share/nvm/init-nvm.sh ] && source /usr/share/nvm/init-nvm.sh' >> /etc/bash.bashrc && \
+    rm -rf /var/cache/pacman/pkg/* /var/lib/pacman/* /var/cache/yay/*
+
+RUN git clone https://github.com/riscv/riscv-gnu-toolchain && \
+    cd riscv-gnu-toolchain && \
+    ./configure --prefix=/opt/riscv --enable-multilib --with-languages=c,c++ && \
+    make linux -j `nproc` && \
+    cd .. && rm -rf riscv-gnu-toolchain
 
 USER devuser
 RUN pipx install websockify
