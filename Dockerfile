@@ -25,7 +25,7 @@ RUN echo -e "[archlinuxcn]\nServer = https://repo.archlinuxcn.org/\$arch" >> /et
     pacman -S --noconfirm yay
 
 RUN yay -S --noconfirm vim nano git autoconf which bear \
-    sdl2_image sdl2_ttf sdl2-compat riscv-gnu-toolchain-bin
+    sdl2_image sdl2_ttf sdl2-compat riscv64-unknown-elf-gcc
 
 RUN yay -S --noconfirm ccache base-devel && \
     cp /usr/bin/ccache /usr/local/bin/ && \
