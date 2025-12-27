@@ -16,7 +16,8 @@ RUN if id -u 1000 >/dev/null 2>&1; then \
     mkdir -p ${XDG_RUNTIME_DIR} && \
     chown devuser:devuser ${XDG_RUNTIME_DIR}
 
-RUN echo -e "\n[archlinuxcn]\nServer = https://repo.archlinuxcn.org/\$arch" >> /etc/pacman.conf && \
+RUN echo -e "[archlinuxcn]\nServer = https://repo.archlinuxcn.org/\$arch" >> /etc/pacman.conf && \
+    echo -e "[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /etc/pacman.conf && \
     pacman -Sy --noconfirm archlinuxcn-keyring && \
     pacman-key --init && \
     pacman-key --populate archlinux archlinuxcn && \
