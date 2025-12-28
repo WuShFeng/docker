@@ -4,6 +4,7 @@ WORKDIR /workspace
 
 ENV XDG_RUNTIME_DIR=/tmp/xdg-runtime-dir
 ENV DISPLAY=:0
+ENV PULSE_RUNTIME_PATH=/tmp/pulse PULSE_SERVER=unix:/tmp/pulse/native
 # ENV WAYLAND_DISPLAY=wayland-0
 ENV PATH="/usr/lib/ccache/bin:/opt/riscv/bin:${PATH}"
 
@@ -25,8 +26,8 @@ RUN echo -e "[archlinuxcn]\nServer = https://repo.archlinuxcn.org/\$arch" >> /et
     pacman-key --populate archlinux archlinuxcn && \
     pacman -S --noconfirm archlinuxcn-mirrorlist-git && \
     pacman -S --noconfirm yay sudo && \
-    yay -Syu --noconfirm vim nano git autoconf which bear ssh \
-    sdl2_image sdl2_ttf sdl2-compat \
+    yay -Syu --noconfirm vim nano git autoconf which bear ssh lsof \
+    sdl2_image sdl2_ttf sdl2-compat go \
     # gcc
     ccache base-devel \
     # pyenv
@@ -36,8 +37,10 @@ RUN echo -e "[archlinuxcn]\nServer = https://repo.archlinuxcn.org/\$arch" >> /et
     # verilator
     verilator \
     # xserver
-    x11vnc xorg-server xf86-video-dummy openbox && \
-    rm -rf /var/cache/pacman/pkg/* /var/cache/yay/*
+    x11vnc xorg-server xf86-video-dummy openbox ttf-dejavu ttf-liberation\
+    # audio
+    pulseaudio ffmpeg \
+    && rm -rf /var/cache/pacman/pkg/* /var/cache/yay/*
 
 COPY Xheadless.conf /etc/X11/xorg.conf.d/Xheadless.conf
 COPY Xwrapper.config /etc/X11/Xwrapper.config
