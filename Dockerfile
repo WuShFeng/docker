@@ -3,10 +3,10 @@ FROM docker.io/library/archlinux:latest
 WORKDIR /workspace
 
 ENV XDG_RUNTIME_DIR=/tmp/xdg-runtime-dir
+ENV PULSE_SERVER=unix:/tmp/pulse/native
 ENV DISPLAY=:0
 # ENV WAYLAND_DISPLAY=wayland-0
 ENV PATH="/usr/lib/ccache/bin:/opt/riscv/bin:${PATH}"
-ENV PULSE_SERVER=/tmp/pulse/native
 RUN if id -u 1000 >/dev/null 2>&1; then \
         old_user=$(id -un 1000); \
         usermod -l devuser -m -d /home/devuser $old_user; \
@@ -60,7 +60,8 @@ RUN cd /opt/riscv/bin && \
 RUN echo 'devuser ALL=(ALL) NOPASSWD: /usr/sbin/nginx' >> /etc/sudoers
 USER devuser
 RUN pipx install websockify
-RUN mkdir $PULSE_SERVER ${XDG_RUNTIME_DIR} && \
-    chmod 700 ${XDG_RUNTIME_DIR} && \
-    chmod 777 $PULSE_SERVER
+RUN mkdir -p /tmp/pulse ${XDG_RUNTIME_DIR} && \
+    chmod 777 /tmp/pulse && \
+    chmod 700 ${XDG_RUNTIME_DIR}
+
 EXPOSE 6080
