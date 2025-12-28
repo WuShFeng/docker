@@ -46,14 +46,13 @@ COPY Xwrapper.config /etc/X11/Xwrapper.config
 COPY display.sh /usr/local/bin/display
 COPY --from=riscv-gnu-toolchain /opt/riscv /opt/riscv
 COPY nginx.conf /etc/nginx/nginx.conf
+COPY noVNC /usr/share/novnc
 RUN echo 'PYENV_ROOT=$HOME/.pyenv' >> /etc/bash.bashrc && \
     echo 'PATH=$PYENV_ROOT/bin:$HOME/.local/bin:$PATH' >> /etc/bash.bashrc && \
     echo 'eval "$(pyenv init - bash)"' >> /etc/bash.bashrc
 RUN echo 'export NVM_DIR="$HOME/.nvm"' >> /etc/bash.bashrc && \
     echo '[ -s /usr/share/nvm/init-nvm.sh ] && source /usr/share/nvm/init-nvm.sh' >> /etc/bash.bashrc
-RUN git clone https://github.com/novnc/noVNC.git /usr/share/novnc --depth 1 --branch v1.6.0 && \
-    ln -s vnc_lite.html /usr/share/novnc/index.html && \
-    chmod a+x /usr/local/bin/display
+RUN chmod a+x /usr/local/bin/display
 RUN cd /opt/riscv/bin && \
     for f in riscv64-unknown-linux-gnu-*; do \
         linkname="${f/-unknown/}"; \
