@@ -6,7 +6,7 @@ ENV XDG_RUNTIME_DIR=/tmp/xdg-runtime-dir
 ENV DISPLAY=:0
 # ENV WAYLAND_DISPLAY=wayland-0
 ENV PATH="/usr/lib/ccache/bin:/opt/riscv/bin:${PATH}"
-
+ENV PULSE_SERVER=/tmp/pulse/native
 RUN if id -u 1000 >/dev/null 2>&1; then \
         old_user=$(id -un 1000); \
         usermod -l devuser -m -d /home/devuser $old_user; \
@@ -14,9 +14,7 @@ RUN if id -u 1000 >/dev/null 2>&1; then \
         chown -R devuser:devuser /home/devuser; \
     else \
         groupadd -g 1000 devuser && useradd -m -u 1000 -g devuser devuser; \
-    fi && \
-    mkdir -p ${XDG_RUNTIME_DIR} && \
-    chown devuser:devuser ${XDG_RUNTIME_DIR}
+    fi
 
 RUN echo -e "[archlinuxcn]\nServer = https://repo.archlinuxcn.org/\$arch" >> /etc/pacman.conf && \
     echo -e "[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /etc/pacman.conf && \
@@ -62,5 +60,7 @@ RUN cd /opt/riscv/bin && \
 RUN echo 'devuser ALL=(ALL) NOPASSWD: /usr/sbin/nginx' >> /etc/sudoers
 USER devuser
 RUN pipx install websockify
-
+RUN mkdir $PULSE_SERVER ${XDG_RUNTIME_DIR} && \
+    chmod 700 ${XDG_RUNTIME_DIR} && \
+    chmod 777 $PULSE_SERVER
 EXPOSE 6080
