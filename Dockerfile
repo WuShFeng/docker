@@ -4,7 +4,6 @@ WORKDIR /workspace
 
 ENV XDG_RUNTIME_DIR=/tmp/xdg-runtime-dir
 ENV DISPLAY=:0
-ENV PULSE_RUNTIME_PATH=/tmp/pulse PULSE_SERVER=unix:/tmp/pulse/native
 # ENV WAYLAND_DISPLAY=wayland-0
 ENV PATH="/usr/lib/ccache/bin:/opt/riscv/bin:${PATH}"
 
@@ -39,18 +38,17 @@ RUN echo -e "[archlinuxcn]\nServer = https://repo.archlinuxcn.org/\$arch" >> /et
     # xserver
     x11vnc xorg-server xf86-video-dummy openbox ttf-dejavu ttf-liberation\
     # audio
-    pulseaudio ffmpeg \
+    pulseaudio ffmpeg nginx \
     && rm -rf /var/cache/pacman/pkg/* /var/cache/yay/*
 
 COPY Xheadless.conf /etc/X11/xorg.conf.d/Xheadless.conf
 COPY Xwrapper.config /etc/X11/Xwrapper.config
 COPY display.sh /usr/local/bin/display
 COPY --from=riscv-gnu-toolchain /opt/riscv /opt/riscv
-
+COPY nginx.conf /etc/nginx/nginx.conf
 RUN echo 'PYENV_ROOT=$HOME/.pyenv' >> /etc/bash.bashrc && \
     echo 'PATH=$PYENV_ROOT/bin:$HOME/.local/bin:$PATH' >> /etc/bash.bashrc && \
     echo 'eval "$(pyenv init - bash)"' >> /etc/bash.bashrc
-
 RUN echo 'export NVM_DIR="$HOME/.nvm"' >> /etc/bash.bashrc && \
     echo '[ -s /usr/share/nvm/init-nvm.sh ] && source /usr/share/nvm/init-nvm.sh' >> /etc/bash.bashrc
 RUN git clone https://github.com/novnc/noVNC.git /usr/share/novnc --depth 1 --branch v1.6.0 && \
@@ -62,7 +60,7 @@ RUN cd /opt/riscv/bin && \
         ln -s "$f" "$linkname"; \
     done && \
     cd -
-
+RUN echo 'devuser ALL=(ALL) NOPASSWD: /usr/sbin/nginx' >> /etc/sudoers
 USER devuser
 RUN pipx install websockify
 
