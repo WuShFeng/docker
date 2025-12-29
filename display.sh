@@ -16,7 +16,10 @@ nohup Xorg $DISPLAY -config /etc/X11/xorg.conf.d/Xheadless.conf \
 sleep 1
 nohup openbox \
     > /dev/null 2>&1 &
-nohup x11vnc -display $DISPLAY -nopw -rfbport 5900 -forever -shared -ncache -noshm -o /tmp/x11vnc.log &
+nohup x11vnc -display $DISPLAY -nopw -rfbport 5900 \
+    -forever -shared -ncache -noshm \
+    -o /tmp/x11vnc.log \
+    > /dev/null 2>&1 &
 
 pulseaudio \
     --daemonize=yes \
