@@ -23,7 +23,7 @@ RUN echo -e "[archlinuxcn]\nServer = https://repo.archlinuxcn.org/\$arch" >> /et
     pacman-key --populate archlinux archlinuxcn && \
     pacman -S --noconfirm archlinuxcn-mirrorlist-git && \
     pacman -S --noconfirm yay sudo && \
-    yay -Syu --noconfirm vim nano git autoconf which bear openssh lsof \
+    yay -Syu --noconfirm vim nano git autoconf which bear openssh lsof less \
     sdl2_image sdl2_ttf sdl2-compat go \
     # gcc
     ccache base-devel \
