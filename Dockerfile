@@ -1,6 +1,6 @@
 FROM docker.io/wushf/riscv-gnu-toolchain:2025.12.7 AS riscv-gnu-toolchain
 FROM docker.io/library/archlinux:latest
-WORKDIR /workspace
+WORKDIR /workspaces
 
 ENV XDG_RUNTIME_DIR=/tmp/xdg-runtime-dir
 ENV PULSE_SERVER=unix:/tmp/pulse/native
