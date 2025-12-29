@@ -24,7 +24,7 @@ RUN echo -e "[archlinuxcn]\nServer = https://repo.archlinuxcn.org/\$arch" >> /et
     pacman -S --noconfirm archlinuxcn-mirrorlist-git && \
     pacman -S --noconfirm yay sudo && \
     yay -Syu --noconfirm vim nano git autoconf which bear openssh lsof less \
-    sdl2_image sdl2_ttf sdl2-compat go \
+    sdl2_image sdl2_ttf sdl2-compat go clang\
     # gcc
     ccache base-devel \
     # pyenv
