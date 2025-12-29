@@ -8,9 +8,7 @@ pkill -9 Xorg \
     websockify \
     nginx \
     2>/dev/null || true
-mkdir -p /tmp/pulse "$XDG_RUNTIME_DIR"
-chmod 777 /tmp/pulse
-chmod 700 "$XDG_RUNTIME_DIR"
+
 rm -rf ${XDG_RUNTIME_DIR:-}/pulse
 nohup Xorg $DISPLAY -config /etc/X11/xorg.conf.d/Xheadless.conf \
     -nolisten tcp -background none \
