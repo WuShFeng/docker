@@ -34,7 +34,7 @@ RUN echo -e "[archlinuxcn]\nServer = https://repo.archlinuxcn.org/\$arch" >> /et
     # verilator
     verilator \
     # xserver
-    x11vnc xorg-server xf86-video-dummy openbox ttf-dejavu ttf-liberation\
+    x11vnc xclip xorg-server xf86-video-dummy openbox ttf-dejavu ttf-liberation\
     # audio
     pulseaudio ffmpeg nginx \
     && rm -rf /var/cache/pacman/pkg/* /var/cache/yay/*
