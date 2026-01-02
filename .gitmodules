@@ -1,4 +1,5 @@
 [submodule "noVNC"]
 	path = noVNC
 	url = https://github.com/WuShFeng/noVNC.git
+	branch = master
 	shallow = true
