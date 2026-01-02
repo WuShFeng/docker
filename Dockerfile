@@ -56,14 +56,14 @@ RUN echo 'PYENV_ROOT=$HOME/.pyenv' >> /etc/bash.bashrc && \
     echo 'devuser ALL=(ALL) NOPASSWD: /usr/sbin/nginx' >> /etc/sudoers && \
     # display
     chmod a+x /usr/local/bin/display
-RUN cd /opt/riscv/bin && \
-    for f in riscv64-unknown-linux-gnu-*; do \
-        linkname="${f/-unknown/}"; \
+RUN for f in /opt/riscv/bin/riscv64-unknown-linux-gnu-*; do \
+        base=$(basename "$f"); \
+        linkname="/opt/riscv/bin/${base/-unknown/}"; \
         ln -s "$f" "$linkname"; \
-    done && \
-    cd -
+    done
 USER devuser
-RUN pipx install websockify
+RUN pipx install websockify && \
+    rm -rf /home/devuser/.cache/pipx
 RUN mkdir -p /tmp/pulse ${XDG_RUNTIME_DIR} && \
     chmod 777 /tmp/pulse && \
     chmod 700 ${XDG_RUNTIME_DIR}
