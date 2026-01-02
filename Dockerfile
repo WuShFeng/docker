@@ -24,7 +24,7 @@ RUN echo -e "[archlinuxcn]\nServer = https://repo.archlinuxcn.org/\$arch" >> /et
     pacman -S --noconfirm archlinuxcn-mirrorlist-git && \
     pacman -S --noconfirm yay sudo && \
     yay -Syu --noconfirm vim nano git autoconf which bear openssh lsof less wget\
-    sdl2_image sdl2_ttf sdl2-compat clang yosys mill \
+    sdl2_image sdl2_ttf sdl2-compat clang yosys jdk17-openjdk \
     # gcc
     ccache base-devel \
     # pyenv
@@ -55,7 +55,11 @@ RUN echo 'PYENV_ROOT=$HOME/.pyenv' >> /etc/bash.bashrc && \
     # sudoers
     echo 'devuser ALL=(ALL) NOPASSWD: /usr/sbin/nginx' >> /etc/sudoers && \
     # display
-    chmod a+x /usr/local/bin/display
+    chmod a+x /usr/local/bin/display && \
+    # mill
+    curl -L https://repo1.maven.org/maven2/com/lihaoyi/mill-dist-native-linux-amd64/0.12.7/mill-dist-native-linux-amd64-0.12.7.jar \
+        -o /usr/local/bin/mill && \
+        chmod a+x /usr/local/bin/mill
 RUN for f in /opt/riscv/bin/riscv64-unknown-linux-gnu-*; do \
         base=$(basename "$f"); \
         linkname="/opt/riscv/bin/${base/-unknown/}"; \
