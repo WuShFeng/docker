@@ -63,7 +63,11 @@ RUN echo 'PYENV_ROOT=$HOME/.pyenv' >> /etc/bash.bashrc && \
 RUN for f in /opt/riscv/bin/riscv64-unknown-linux-gnu-*; do \
         base=$(basename "$f"); \
         linkname="/opt/riscv/bin/${base/-unknown/}"; \
-        ln -s "$f" "$linkname"; \
+        ln -sf "$f" "$linkname"; \
+    done && \
+    for f in /opt/riscv/bin/riscv64-*-gcc /opt/riscv/bin/riscv64-*-g++ /usr/bin/{gcc,g++,clang,clang++}; do \
+        [ -e "$f" ] || continue; \
+        ln -sf "/usr/bin/ccache" "/usr/lib/ccache/bin/$(basename $f)"; \
     done
 USER devuser
 RUN pipx install websockify && \
