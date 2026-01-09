@@ -1,4 +1,4 @@
-FROM docker.io/wushf/riscv-gnu-toolchain:2025.12.7 AS riscv-gnu-toolchain
+FROM docker.io/wushf/riscv-gnu-toolchain:master AS riscv-gnu-toolchain
 FROM docker.io/library/archlinux:latest
 WORKDIR /workspaces
 
