@@ -65,7 +65,8 @@ export GIT_PS1_SHOWSTASHSTATE=true
 export GIT_PS1_SHOWUNTRACKEDFILES=true
 export GIT_PS1_SHOWUPSTREAM=auto
 PS1='\[\e[32m\]\u@\h\[\e[0m\]:\[\e[34m\]\W\[\e[31m\]$(__git_ps1 " (%s)")\[\e[0m\]\$ '
-EOF && \
+EOF
+RUN \
     # sudoers
     echo 'devuser ALL=(ALL) NOPASSWD: /usr/sbin/nginx' >> /etc/sudoers && \
     # display
