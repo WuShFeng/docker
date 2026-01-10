@@ -7,14 +7,6 @@ ENV PULSE_SERVER=unix:/tmp/pulse/native
 ENV DISPLAY=:0
 # ENV WAYLAND_DISPLAY=wayland-0
 ENV PATH="/usr/lib/ccache/bin:/opt/riscv/bin:${PATH}"
-RUN if id -u 1000 >/dev/null 2>&1; then \
-        old_user=$(id -un 1000); \
-        usermod -l devuser -m -d /home/devuser $old_user; \
-        groupmod -n devuser $old_user; \
-        chown -R devuser:devuser /home/devuser; \
-    else \
-        groupadd -g 1000 devuser && useradd -m -u 1000 -g devuser devuser; \
-    fi
 
 RUN echo -e "[archlinuxcn]\nServer = https://repo.archlinuxcn.org/\$arch" >> /etc/pacman.conf && \
     echo -e "[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /etc/pacman.conf && \
@@ -65,6 +57,14 @@ RUN for f in /opt/riscv/bin/riscv64-unknown-linux-gnu-*; do \
         [ -e "$f" ] || continue; \
         ln -sf "/usr/bin/ccache" "/usr/lib/ccache/bin/$(basename $f)"; \
     done
+RUN if id -u 1000 >/dev/null 2>&1; then \
+        old_user=$(id -un 1000); \
+        usermod -l devuser -m -d /home/devuser $old_user; \
+        groupmod -n devuser $old_user; \
+        chown -R devuser:devuser /home/devuser; \
+    else \
+        groupadd -g 1000 devuser && useradd -m -u 1000 -g devuser devuser; \
+    fi
 USER devuser
 RUN pipx install websockify && \
     rm -rf /home/devuser/.cache/pipx
