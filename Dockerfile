@@ -45,7 +45,7 @@ RUN \
     # display
     chmod a+x /usr/local/bin/display && \
     # mill
-    curl -L https://repo1.maven.org/maven2/com/lihaoyi/mill-dist-native-linux-amd64/0.12.7/mill-dist-native-linux-amd64-0.12.7.jar \
+    curl -L https://repo1.maven.org/maven2/com/lihaoyi/mill-dist/1.0.6/mill-dist-1.0.6-mill.sh \
         -o /usr/local/bin/mill && \
         chmod a+x /usr/local/bin/mill
 RUN for f in /opt/riscv/bin/riscv64-unknown-linux-gnu-*; do \
