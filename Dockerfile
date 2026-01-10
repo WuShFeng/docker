@@ -45,27 +45,8 @@ COPY Xwrapper.config /etc/X11/Xwrapper.config
 COPY display.sh /usr/local/bin/display
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY noVNC /usr/share/novnc
+COPY .bashrc /etc/skel/.bashrc
 
-RUN cat <<'EOF' >> /etc/bash.bashrc
-# Pyenv
-export PYENV_ROOT=$HOME/.pyenv
-export PATH=$PYENV_ROOT/bin:$HOME/.local/bin:$PATH
-eval "$(pyenv init - bash)"
-
-# nvm
-export NVM_DIR="$HOME/.nvm"
-[ -s /usr/share/nvm/init-nvm.sh ] && source /usr/share/nvm/init-nvm.sh
-
-# Git PS1
-if [ -f /usr/share/git/completion/git-prompt.sh ]; then
-    source /usr/share/git/completion/git-prompt.sh
-fi
-export GIT_PS1_SHOWDIRTYSTATE=true
-export GIT_PS1_SHOWSTASHSTATE=true
-export GIT_PS1_SHOWUNTRACKEDFILES=true
-export GIT_PS1_SHOWUPSTREAM=auto
-PS1='\[\e[32m\]\u@\h\[\e[0m\]:\[\e[34m\]\W\[\e[31m\]$(__git_ps1 " (%s)")\[\e[0m\]\$ '
-EOF
 RUN \
     # sudoers
     echo 'devuser ALL=(ALL) NOPASSWD: /usr/sbin/nginx' >> /etc/sudoers && \
